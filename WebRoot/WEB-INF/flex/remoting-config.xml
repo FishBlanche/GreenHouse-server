@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service id="remoting-service" 
+    class="flex.messaging.services.RemotingService">
+
+    <adapters>
+        <adapter-definition id="java-object" class="flex.messaging.services.remoting.adapters.JavaAdapter" default="true"/>
+    </adapters>
+
+    <default-channels>
+        <channel ref="my-amf"/>
+    </default-channels>
+    
+ 
+    <destination id="NewestSensingService">
+        <properties>
+            <source>feed.NewestSensingService</source>
+        </properties>
+    </destination>
+    
+   <destination id="SensingHistoryService"> 
+        <properties>
+            <source>feed.SensingHistoryService</source>
+        </properties>
+    </destination>
+	
+    <destination id="SensorInfoService">
+		<properties>
+			<source>oldVersion.SensorInfoService</source>
+		</properties>
+	</destination>
+	 <destination id="NodeInfoService">
+        <properties>
+        <source>feed.NodeInfoService</source>
+        </properties>
+    </destination>
+    
+    
+    
+    <destination id="FindNewestSense">
+        <properties>
+        <source>service.FindNewestSense</source>
+        </properties>
+    </destination>
+    <destination id="FindLastSense">
+        <properties>
+        <source>service.FindLastSense</source>
+        </properties>
+    </destination>
+     <destination id="UserService">
+        <properties>
+        <source>service.FindUser</source>
+        </properties>
+    </destination>
+     <destination id="AutoControlService">
+        <properties>
+        <source>service.AutoControlService</source>
+        </properties>
+    </destination>
+    <destination id="DeviceControlService">
+        <properties>
+        <source>service.DeviceControlService</source>
+        </properties>
+    </destination>
+    <destination id="FindSetting">
+        <properties>
+        <source>service.FindSetting</source>
+        </properties>
+    </destination>
+    <destination id="AreaMapService">
+        <properties>
+        <source>service.AreaMapService</source>
+        </properties>
+    </destination>
+    <destination id="DelControlService">
+        <properties>
+        <source>service.DelControlService</source>
+        </properties>
+    </destination>
+</service>
