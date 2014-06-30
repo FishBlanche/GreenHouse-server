@@ -27,7 +27,7 @@ public String  saveAreaMap(List<String> areaMap,String userIdentity)
 	}
 	else 
 	{
-		if(MapData.identityMap.get("identity").equals(userIdentity))
+		if(MapData.identityMap.get("identity")!=null&&MapData.identityMap.get("identity").equals(userIdentity))
 		{
 			for(int i=0;i<areaMap.size();i++)
 			{
@@ -69,7 +69,7 @@ public void sql_deal(List<String> areaMap)
 		{
 			//修改
 			sql1="update Node set area="+tempStr[1]+" where  Moteid_ID="+tempStr[0];
-			System.out.println(sql1);
+			//System.out.println(sql1);
 			stmt.executeUpdate(sql1);
 			
 		}

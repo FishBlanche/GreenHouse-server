@@ -30,12 +30,8 @@ public class CurrentSocketImpl implements CurrentSocketDao ,Runnable{
 	private ObjectOutputStream dataOutputStream = null;
 	private User user = null;
 	private Thread thread = null;
-	private Map<Integer, RouteInfo> routeMap = null;
-	private boolean isBlock = false; 
 	private boolean isWork = true;
-	private SocketData temp ;
-	//维护自身路由表
-	private Timer timer = new Timer();;
+	
 	private BlockingQueue<SocketData> socketDatas  = SocketManageImpl.socketDatas;
 	private SocketManageDao manageImpl = SocketManageImpl.getSocketManage();
 	public CurrentSocketImpl(Socket socket){
@@ -56,43 +52,14 @@ public class CurrentSocketImpl implements CurrentSocketDao ,Runnable{
 			else{
 				dataOutputStream.writeUnshared("FF");
 				dataOutputStream.flush();
-				//sendAll("数据下行测试机123abc");
-				
-//				
-//				String message = "01 01 00 0A 00 01";
-//				String leng = Integer.toHexString(message.length()/2+8);
-//				System.out.println("payload:"+message);
-//				if(leng.length() !=2) leng = "0"+leng;
-//				System.out.println("leng:"+leng);
-//				String temp = CRC.getCrcTool().getCRCCode("440000FFFF000F"+leng+"3F89"+message);
-//				System.out.println("crcString:"+"440000FFFF000F"+leng+"3F89"+message);
-//				message = "7E 44 00 00 FF FF 00 0F "+leng+" 3F 89 "+message+" "+temp.substring(2)+" "+temp.substring(0,2)+" 7E";
-//			//	sendAll("7E 44 00 00 FF FF 00 0F 0a 3F 89 FF FF 88 0B 7E");
-//			//	sendAll("7E 44 00 00 FF FF 00 0F 0E 3F 89 01 01 00 0A 00 01 0A 26 7E");
-//				sendAll(message.toUpperCase());
-				
-//				System.out.println("message:"+message);
-				
-				
 				this.user = user;
 			}
 		} catch (Exception e ) {
 			// TODO Auto-generated catch block
 			return false;
 		}
-		routeMap = new HashMap<>(); 
 		thread = new Thread(this);
 		thread.start();
-		
-		timer.schedule(new TimerTask() {
-			
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				refreshRouteMap();
-				
-			}
-		}, 300000, 600000);
 		return true;
 		
 	}
@@ -124,11 +91,6 @@ public class CurrentSocketImpl implements CurrentSocketDao ,Runnable{
 		return user;
 	}
 
-	@Override
-	public void block() {
-		// TODO Auto-generated method stub
-		isBlock = true;
-	}
 
 	@Override
 	public boolean close() {
@@ -137,7 +99,6 @@ public class CurrentSocketImpl implements CurrentSocketDao ,Runnable{
 			socket.shutdownInput();
 			socket.shutdownOutput();
 		    socket.close();
-		    timer.cancel();
 		    isWork = false;
 		    if(thread != null)
 		    	thread.interrupt();
@@ -190,35 +151,20 @@ public class CurrentSocketImpl implements CurrentSocketDao ,Runnable{
 	public Map<Integer, RouteInfo> getRouteMap() {
 		// TODO Auto-generated method stub
 		
-		return routeMap;
+		return null;
 	}
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		temp = new SocketData(user.getProid());
 		while(isWork){
 			try {
+				SocketData temp  = new SocketData(user.getProid());
 				DataType dataType = (DataType) objectInputStream.readObject();	
 				temp.setDataType(dataType);
-				//维护表  节点编号+真实入口
-				int key =Integer.parseInt(dataType.getPropertyList().get(2).getValue(),16);	
-			   RouteInfo info =	routeMap.get(key);
-			   if(info == null){
-				   info = new RouteInfo();
-				   routeMap.put(key, info);
-			   }else{
-				   info.setNumber(info.getNumber()+1);
-				   info.setLastTime(new Date());
-				   info.setIp(dataType.getEntryName().trim());
-			   }
-			   
 			   socketDatas.put(temp);
-			   
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				
 				manageImpl.closeClient(user.getProid());
-			
 				e.printStackTrace();
 			}
 		}
@@ -245,5 +191,10 @@ public class CurrentSocketImpl implements CurrentSocketDao ,Runnable{
 		e.printStackTrace();
 		return false;
 	}
+	}
+	@Override
+	public void block() {
+		// TODO Auto-generated method stub
+		
 	}
 }

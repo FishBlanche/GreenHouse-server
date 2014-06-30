@@ -4,11 +4,13 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
+import utility.ComparatorUtil;
 
 
 import entity.APPData;
@@ -23,141 +25,168 @@ import entity.SensingEntry;
 public class FindLastSense {
 	private Connection connection = null;
 	private Statement stmt = null;
-
+	ComparatorUtil comparator=new ComparatorUtil();
+	private SimpleDateFormat   sDateFormat   =   new   SimpleDateFormat("yyyy-MM-dd   HH:mm:ss"); 
 	public Connection getConnection() throws SQLException {
 		 
 		return MySqlConnectionHelper.getConnection();
 	}
-	public List<APPData> GetData(String sql)
-	{
-		List<APPData> listData = new ArrayList<APPData>();
+ 
+	public List<List> newGetLastSense(String TH_ID, String STH_ID,
+			String CO_ID, String PH_ID, String CO2_ID, String L_ID,int days) {
+	//	System.out.println("newGetLastSense");
+		
+		List<APPData> temperlistData = new ArrayList<APPData>();
+		List<APPData> humilistData = new ArrayList<APPData>();
+		List<APPData> stemperlistData = new ArrayList<APPData>();
+		List<APPData> shumilistData = new ArrayList<APPData>();
+		List<APPData> colistData = new ArrayList<APPData>();
+		List<APPData> phlistData = new ArrayList<APPData>();
+		List<APPData> co2listData = new ArrayList<APPData>();
+		List<APPData> llistData = new ArrayList<APPData>();
+		List<List> list = new ArrayList<List>();
+	//	Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+	//	String dateString = sdf.format(date);
 		try {
 			connection = getConnection();
 			stmt = connection.createStatement();
-			String t1[];
-			String t2[];
-		 
+
 			ResultSet rs1 = null;
+		//	int days=30;
+	//		String sql = "select Moteid_ID,temperature,humidity,photo_active,co2,A0,A1,TimestampArrive_TM from DataCollect where  TimestampArrive_TM> '"+ dateString + " 00:00:00'";
+			String sql = "select Moteid_ID,temperature,humidity,photo_active,co2,A0,A1,TimestampArrive_TM from DataCollect where  TimestampArrive_TM >TIMESTAMP(DATE_SUB(NOW(), INTERVAL "
+					+ days + " day))";
+					 
+            
 			rs1 = stmt.executeQuery(sql);
-		 
-			while(rs1.next()){			
-				APPData vl = new APPData();
-				vl.setValue(rs1.getString(1));
-				t1=rs1.getString(2).split(" ");
-			 
-			 
-				vl.setTimestamparrive_tm(t1[1]);
-			 
-				listData.add(vl);
-			}
 			
+			while (rs1.next()) {
+			 
+				if (rs1.getString("Moteid_ID").equals(TH_ID)) {
+					APPData temper = new APPData();
+					temper.setValue(rs1.getString("temperature"));
+				//	temper.setTimestamparrive_tm(rs1.getString("TimestampArrive_TM").split(" ")[1]);
+					 
+					try {
+						temper.setTimestamparrive_tm(sDateFormat.parse(sDateFormat.format(rs1.getTimestamp("TimestampArrive_TM"))));
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					temperlistData.add(temper);
+					APPData humi = new APPData();
+					humi.setValue(rs1.getString("humidity"));
+				//	humi.setTimestamparrive_tm(rs1.getString("TimestampArrive_TM").split(" ")[1]);
+					try {
+						humi.setTimestamparrive_tm(sDateFormat.parse(sDateFormat.format(rs1.getTimestamp("TimestampArrive_TM"))));
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					humilistData.add(humi);
+				} else if (rs1.getString("Moteid_ID").equals(STH_ID)) {
+					APPData stemper = new APPData();
+					stemper.setValue(rs1.getString("A0"));
+				//	stemper.setTimestamparrive_tm(rs1.getString("TimestampArrive_TM").split(" ")[1]);
+					try {
+						stemper.setTimestamparrive_tm(sDateFormat.parse(sDateFormat.format(rs1.getTimestamp("TimestampArrive_TM"))));
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					stemperlistData.add(stemper);
+					APPData shumi = new APPData();
+					shumi.setValue(rs1.getString("A1"));
+				//	shumi.setTimestamparrive_tm(rs1.getString("TimestampArrive_TM").split(" ")[1]);
+					try {
+						shumi.setTimestamparrive_tm(sDateFormat.parse(sDateFormat.format(rs1.getTimestamp("TimestampArrive_TM"))));
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					shumilistData.add(shumi);
+				} else if (rs1.getString("Moteid_ID").equals(CO_ID)) {
+					APPData myco = new APPData();
+					myco.setValue(rs1.getString("co2"));
+				//	myco.setTimestamparrive_tm(rs1.getString("TimestampArrive_TM").split(" ")[1]);
+					try {
+						myco.setTimestamparrive_tm(sDateFormat.parse(sDateFormat.format(rs1.getTimestamp("TimestampArrive_TM"))));
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					colistData.add(myco);
+				} else if (rs1.getString("Moteid_ID").equals(PH_ID)) {
+
+					APPData myph = new APPData();
+					myph.setValue(rs1.getString("co2"));
+					//myph.setTimestamparrive_tm(rs1.getString("TimestampArrive_TM").split(" ")[1]);
+					try {
+						myph.setTimestamparrive_tm(sDateFormat.parse(sDateFormat.format(rs1.getTimestamp("TimestampArrive_TM"))));
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					phlistData.add(myph);
+				} else if (rs1.getString("Moteid_ID").equals(CO2_ID)) {
+                    APPData myco2 = new APPData();
+					myco2.setValue(rs1.getString("co2"));
+			//		myco2.setTimestamparrive_tm(rs1.getString("TimestampArrive_TM").split(" ")[1]);
+					try {
+						myco2.setTimestamparrive_tm(sDateFormat.parse(sDateFormat.format(rs1.getTimestamp("TimestampArrive_TM"))));
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					co2listData.add(myco2);
+				} else if (rs1.getString("Moteid_ID").equals(L_ID)) {
+
+					APPData myl = new APPData();
+					myl.setValue(rs1.getString("photo_active"));
+			//		myl.setTimestamparrive_tm(rs1.getString("TimestampArrive_TM").split(" ")[1]);
+					try {
+						myl.setTimestamparrive_tm(sDateFormat.parse(sDateFormat.format(rs1.getTimestamp("TimestampArrive_TM"))));
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					llistData.add(myl);
+				} else {
+
+				}
+			}
+
 		} catch (SQLException e) {
 
 			throw new RuntimeException(e);
-			
+
 		} finally {
-           MySqlConnectionHelper.closeStatement(stmt);
+			MySqlConnectionHelper.closeStatement(stmt);
 			MySqlConnectionHelper.close(connection);
 		}
-		return listData;
-	}
-	public List<List> GetLastSense(String TH_ID,String STH_ID,String CO_ID,String PH_ID,String CO2_ID,String L_ID)
-	{
-	//	System.out.println("GetLastSense"+TH_ID+","+STH_ID+","+CO_ID+","+PH_ID+","+CO2_ID+","+L_ID);
-		Date date = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String dateString = sdf.format(date);
-		//dateString=dateString+" "+"00:00:00";
-		 List<List> list = new ArrayList<List>();
-		 if(TH_ID.equals(""))
-		 {
-			 list.add(null);
-		 }
-		 else
-		 {
-			 String sql1 = "select temperature,TimestampArrive_TM from DataCollect where Moteid_ID="+TH_ID+" and TimestampArrive_TM> '"+dateString+" 00:00:00' order by TimestampArrive_TM asc";
-			// System.out.println(sql1);
-		//	 System.out.println("GetData(sql1).size()"+GetData(sql1).size());
-		        list.add(GetData(sql1));
-		 }
-		 if(TH_ID.equals(""))
-		 {
-			 list.add(null);
-		 }
-		 else
-		 {
-			  String sql2 = "select humidity,TimestampArrive_TM from DataCollect where Moteid_ID="+TH_ID+" and TimestampArrive_TM> '"+dateString+" 00:00:00' order by TimestampArrive_TM asc";
-			//  System.out.println(sql2);
-		//	  System.out.println("GetData(sql2).size()"+GetData(sql2).size());
-		       list.add(GetData(sql2));
-		 }
-        if(STH_ID.equals(""))
-        {
-        	list.add(null);
-        }
-        else
-        {
-        	 String sql3 = "select temperature,TimestampArrive_TM from DataCollect where Moteid_ID="+STH_ID+" and TimestampArrive_TM> '"+dateString+" 00:00:00' order by TimestampArrive_TM asc";
-        //	  System.out.println(sql3); 
-        //	  System.out.println("GetData(sql3).size()"+GetData(sql3).size());
-             list.add(GetData(sql3));
-        }
-       if(STH_ID.equals(""))
-       {
-    	   list.add(null);
-       }
-       else
-       {
-    	   String sql4 = "select humidity,TimestampArrive_TM from DataCollect where Moteid_ID="+STH_ID+" and TimestampArrive_TM> '"+dateString+" 00:00:00' order by TimestampArrive_TM asc";
-    	 //  System.out.println(sql4);
-    	//   System.out.println("GetData(sql4).size()"+GetData(sql4).size());
-           list.add(GetData(sql4));
-       }
-       if(CO_ID.equals(""))
-       {
-    	   list.add(null);
-       }
-       else
-       {
-    	   String sql5 = "select co2,TimestampArrive_TM from DataCollect where Moteid_ID="+CO_ID+" and TimestampArrive_TM> '"+dateString+" 00:00:00' order by TimestampArrive_TM asc";
-    	//   System.out.println(sql5);
-    	 //  System.out.println("GetData(sql5).size()"+GetData(sql5).size());
-           list.add(GetData(sql5));
-       }
-       if(PH_ID.equals(""))
-       {
-    	   list.add(null);
-       }
-       else
-       {
-    	   String sql6 = "select co2,TimestampArrive_TM from DataCollect where Moteid_ID="+PH_ID+" and TimestampArrive_TM> '"+dateString+" 00:00:00' order by TimestampArrive_TM asc";
-  //  	   System.out.println(sql6);
-//    	   System.out.println("GetData(sql6).size()"+GetData(sql6).size());
-           list.add(GetData(sql6));
-       }
-       if(CO2_ID.equals(""))
-       {
-    	   list.add(null);
-       }
-       else
-       {
-    	   String sql7 = "select co2,TimestampArrive_TM from DataCollect where Moteid_ID="+CO2_ID+" and TimestampArrive_TM> '"+dateString+" 00:00:00' order by TimestampArrive_TM asc";
-    	//   System.out.println(sql7);
-    //	   System.out.println("GetData(sql7).size()"+GetData(sql7).size());
-           list.add(GetData(sql7));
-       }
-       if(L_ID.equals(""))
-       {
-    	   list.add(null);
-       }
-       else
-       {
-    	   String sql8 = "select photo_active,TimestampArrive_TM from DataCollect where Moteid_ID="+L_ID+" and TimestampArrive_TM> '"+dateString+" 00:00:00' order by TimestampArrive_TM asc";
-    //       System.out.println(sql8);
-       //    System.out.println("GetData(sql8).size()"+GetData(sql8).size());
-           list.add(GetData(sql8));
-       }
-       System.out.println("list.size()"+list.size());
+		Collections.sort(temperlistData, comparator);
+		list.add(temperlistData);
+		Collections.sort(humilistData, comparator);
+		list.add(humilistData);
+		Collections.sort(stemperlistData, comparator);
+		list.add(stemperlistData);
+		Collections.sort(shumilistData, comparator);
+		list.add(shumilistData);
+		Collections.sort(colistData, comparator);
+		list.add(colistData);
+		Collections.sort(phlistData, comparator);
+		list.add(phlistData);
+		Collections.sort(co2listData, comparator);
+		list.add(co2listData);
+		Collections.sort(llistData, comparator);
+		list.add(llistData);
+		 /*
+	 	System.out.println("list.size()" + list.size() + ","
+				+ temperlistData.size() + "," + humilistData.size() + ","
+				+ stemperlistData.size() + "," + shumilistData.size() + ","
+				+ colistData.size() + "," + phlistData.size() + ","
+				+ co2listData.size() + "," + llistData.size());*/
 		return list;
 	}
 }

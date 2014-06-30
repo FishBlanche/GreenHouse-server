@@ -37,7 +37,7 @@ public class FindUser {
 				String dateString = sdf.format(date);
 				currentIdentity=userName+":"+password+":"+dateString;
 				MapData.identityMap.put("identity", currentIdentity);
-				System.out.println("当前活动者"+MapData.identityMap.get("identity"));
+			//	System.out.println("当前活动者"+MapData.identityMap.get("identity"));
 			}
 			
 			

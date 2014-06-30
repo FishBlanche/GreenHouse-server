@@ -11,6 +11,9 @@ import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -45,7 +48,7 @@ public class ServletInitializer extends HttpServlet {
 		TimeZone.setDefault(TimeZone.getTimeZone("GMT+8"));
 		timer = new Timer();
 		timer.schedule(new RemindTask(), 5* 1000);
-
+		 
 	}
 
 	class RemindTask extends TimerTask {
@@ -58,12 +61,29 @@ public class ServletInitializer extends HttpServlet {
 				String sql="";
 				ResultSet rs= null;
 				
-			    sql="select Moteid_ID,area from Node";
+			    sql="select Moteid_ID,area,SensingType from Node";
 				rs= stmt.executeQuery(sql);
 				while(rs.next())
 				{
 					System.out.println(rs.getString("Moteid_ID")+","+rs.getString("area"));
 					MapData.moteAreaMap.put(rs.getString("Moteid_ID"), rs.getString("area"));
+					switch(rs.getString("SensingType"))
+					{
+					case "HT":MapData.moteTypeMap.put(rs.getString("Moteid_ID"), 0);
+						      break;
+					case "CO2":MapData.moteTypeMap.put(rs.getString("Moteid_ID"),2);
+						       break;
+					case "CO":MapData.moteTypeMap.put(rs.getString("Moteid_ID"),1);
+						      break;
+					case "L":MapData.moteTypeMap.put(rs.getString("Moteid_ID"),10);
+						      break;
+					case "SHT":MapData.moteTypeMap.put(rs.getString("Moteid_ID"),9);
+						      break;
+					case "PH":MapData.moteTypeMap.put(rs.getString("Moteid_ID"),8);
+						      break;
+					default:break;
+					}
+				//	System.out.println("节点 类型"+rs.getString("Moteid_ID")+","+MapData.moteTypeMap.get(rs.getString("Moteid_ID")));
 				}
 				
 				 sql="select * from MyControlInfo order by time asc";
@@ -74,11 +94,9 @@ public class ServletInitializer extends HttpServlet {
 					{
 						 myKey=rs.getString("groupId");
 						 myValue=rs.getString("mycondition")+";"+rs.getString("operation")+";"+rs.getString("time");
-						 System.out.println( myKey+","+ myValue);
+			//	 	 System.out.println( myKey+","+ myValue);
 						 MapData.settingMap.put(myKey, myValue);
 					}
-				
-				 
 				
 				} catch (SQLException e) {
 	             throw new RuntimeException(e);

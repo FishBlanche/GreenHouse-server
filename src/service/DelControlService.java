@@ -23,7 +23,7 @@ public class DelControlService {
 	 
 	public String  DelControlSet(String controlGp,String userIdentity) {
 	   String status="";
-       System.out.println(userIdentity);
+     //  System.out.println(userIdentity);
  
 		if(userIdentity.equals(""))
 		{
@@ -31,7 +31,7 @@ public class DelControlService {
 		}
 		else 
 		{
-			if(MapData.identityMap.get("identity").equals(userIdentity))
+			if(MapData.identityMap.get("identity")!=null&&MapData.identityMap.get("identity").equals(userIdentity))
 			{
 				String[] cigp=controlGp.split(";");
 				if(MapData.settingMap.containsKey(cigp[0]))

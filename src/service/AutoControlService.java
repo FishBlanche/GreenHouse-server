@@ -23,7 +23,7 @@ public class AutoControlService {
 	 
 	public String  ControlSet(String controlGp,String userIdentity) {
 	   String status="";
-       System.out.println(userIdentity);
+   //    System.out.println(userIdentity);
 	 //System.out.println("ci.SensorType ci.RangeType ci.Range ci.deviceType ci.deviceId   ci.status ci.Duration"+ci.SensorType+","+ci.RangeType+","+ci.Range+","+ci.deviceType+","+ci.deviceId+","+ci.status+","+ci.Duration);
 
 		if(userIdentity.equals(""))
@@ -32,18 +32,18 @@ public class AutoControlService {
 		}
 		else 
 		{
-			if(MapData.identityMap.get("identity").equals(userIdentity))
+			if(MapData.identityMap.get("identity")!=null&&MapData.identityMap.get("identity").equals(userIdentity))
 			{
 				String myKey="";
 				String myValue="";
 				String[] cigp=controlGp.split(";");
 				myKey=cigp[0];
 				myValue=cigp[1]+";"+cigp[2]+";"+cigp[3];
-				System.out.println("ControlSet"+myKey+"::"+myValue);
+			//	System.out.println("ControlSet"+myKey+"::"+myValue);
 				MapData.settingMap.put(myKey, myValue);
 				Sql_deal(myKey,myValue);
 				status=myKey+";"+myValue;
-				System.out.println("status"+status);
+		//		System.out.println("status"+status);
 			}
 			else
 			{
@@ -70,17 +70,17 @@ public class AutoControlService {
 			{
 				//修改
 				String sql1="update MyControlInfo set mycondition='"+valuegp[0]+"',operation='"+valuegp[1]+"',time='"+valuegp[2]+"'  where groupId='"+myKey+"'";
-				System.out.println(sql1);
+			//	System.out.println(sql1);
 
 				stmt.executeUpdate(sql1);
 			}
 			else
 			{
 				//插入
-				String idStr="";
-				idStr=UuidGenerator.generate32UUID();
-				String sql2="insert into MyControlInfo(Id,groupId,mycondition,operation,time) values('"+idStr+"','"+myKey+"','"+valuegp[0]+"','"+valuegp[1]+"','"+valuegp[2]+"')";
-				System.out.println(sql2);
+			//	String idStr="";
+			//	idStr=UuidGenerator.generate32UUID();
+				String sql2="insert into MyControlInfo(groupId,mycondition,operation,time) values('"+myKey+"','"+valuegp[0]+"','"+valuegp[1]+"','"+valuegp[2]+"')";
+			//	System.out.println(sql2);
 				stmt.executeUpdate(sql2);
 			}
 		} catch (SQLException e) {

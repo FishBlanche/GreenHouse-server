@@ -2,14 +2,16 @@ package com.run.park.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+
 public class DataType implements Serializable ,Cloneable{
 	private static final long serialVersionUID = -5240152692961888096L;
-	//入口名字
+	//�������
 	private String entryName = null;
-	//入口信息
+	//�����Ϣ
 	private String entryInfo = null;
 	//
 	private String attachedInfo = null;
@@ -18,14 +20,8 @@ public class DataType implements Serializable ,Cloneable{
 	private String  dataName      = null;   
 	private String  useRuleName   = null;   
 	private int  dataLength       = -1;
-	private List<DataType_Property> propertyList  = null;
-	private String temp = "";
-	private String colTemp = "";
-	private String valTemp = "";
-	private String value = "";
-	private String  originalData= "";
-	private String datainfo = "";
-	private String propertyinfo = "";
+	private List<DataType_Property> propertyList  = null ;
+	
 	public DataType() {
 		super();
 	}
@@ -38,8 +34,43 @@ public class DataType implements Serializable ,Cloneable{
 		this.propertyList = Propertys;
 	
 	}
-
-
+	//��ȡunknow����
+	public List<DataType_Property> getUnknow(){
+		List<DataType_Property> propertys = new ArrayList<DataType_Property>();
+		Iterator<DataType_Property > iterators = propertyList.iterator();
+		while(iterators.hasNext()){
+			DataType_Property temp = iterators.next();
+			if(temp.getType().equals("unknown"))  propertys.add(temp);
+		}
+		return propertys;
+	}
+//��ȡ����
+//	public DataType_Property getDataType_Property(String colTable){
+//		Iterator<DataType_Property > iterators = propertyList.iterator();
+//		while(iterators.hasNext()){
+//			DataType_Property temp = iterators.next();
+//			if(temp.getColTable().equals(colTable)) return temp;
+//		}
+//		return null;
+//	}
+//�޸����
+//	public void updatePropertyvalue(String colTable ,String value){
+//		DataType_Property temp = getDataType_Property(colTable);
+//		temp.setValue(value);
+//	}
+//���������
+//	public void addPropertys(DataType_Property dataType_Property){
+//		propertyList.add(dataType_Property);
+//	}
+//�Ƴ�����
+//	public boolean removePropertys(String colTable){
+//		DataType_Property tempProperty =getDataType_Property(colTable);
+//		if(tempProperty == null){
+//			return false;
+//		}
+//		propertyList.remove(tempProperty);
+//		return true;
+//	}
 	public int getDataLength() {
 		return dataLength;
 	}
@@ -90,6 +121,7 @@ public class DataType implements Serializable ,Cloneable{
 	}
 	
 	public String toInfo(){
+		String temp = "";
 		DataType_Property property = null;
 		int index = 0;
 		while(index < this.propertyList.size()){
@@ -101,19 +133,23 @@ public class DataType implements Serializable ,Cloneable{
 		return temp;
 		
 	}
-	public List<DataType_Property> getUnknow(){
-		List<DataType_Property> propertys = new ArrayList<>();
-		Iterator<DataType_Property > iterators = propertyList.iterator();
-		while(iterators.hasNext()){
-			DataType_Property temp = iterators.next();
-			if(temp.getType().equals("unknown"))  propertys.add(temp);
-		}
-		return propertys;
-	}
 
-	
-	
+	private int mean(String type) {
+		// TODO Auto-generated method stub
+		
+		if(type.equals("int"))
+			return 1;
+		else if(type.equals("long"))
+			return 2;
+		else if(type.equals("string"))
+			return 3;
+		else if(type.equals("time"))
+			return 4;
+		else
+		return 0;
+	}
 	public String toData(){
+		String temp ="";
 		DataType_Property property = null;
 		int index = 0;
 		while(index < this.propertyList.size()){
@@ -125,8 +161,37 @@ public class DataType implements Serializable ,Cloneable{
 		return temp;
 		
 	}
-
+//	public DataType stringToObject(String object){
+//	DataType type =	new DataType();
+//	String[] temp = object.split(" ");
+//	type.setEntryInfo(temp[0]);
+//	type.setAttachedInfo(temp[1]);
+//	type.setDataType(temp[2]);
+//	type.setMapTable(temp[3]);
+//	type.setDataName(temp[4]);
+//	type.setUseRuleName(temp[5]);
+//	type.setDataLength(Integer.parseInt(temp[6]));
+//	int index = 7;
+//	List<DataType_Property> properties = new ArrayList<>();
+//	while(index < object.length() ){
+//		DataType_Property type_Property = new DataType_Property();
+//		String porperty = temp[index];
+//		String[] porpertyTemp = porperty.split("|");
+//		type_Property.setMean(porpertyTemp[0]);
+//		type_Property.setColTable(porpertyTemp[1]);
+//		type_Property.setType(porpertyTemp[2]);
+//		type_Property.setIndex(Integer.parseInt(porpertyTemp[3]));
+//		type_Property.setLength(Integer.parseInt(porpertyTemp[4]));
+//		type_Property.setValue(porpertyTemp[5]);
+//		properties.add(type_Property);
+//		index++;
+//	}
+//	type.setPropertyList(properties);
+//		return type;
+//		
+//	}
 	public String toOriginalData(){
+		String originalData ="";
 		originalData += this.entryName;
 		originalData +=" "+this.entryInfo;
 		originalData +=" "+this.attachedInfo;
@@ -141,8 +206,8 @@ public class DataType implements Serializable ,Cloneable{
 		return originalData;
 	}
 	public String toString(){
-		datainfo = "";
-		propertyinfo = "";
+		String datainfo = "";
+		String propertyinfo = "";
 		datainfo += this.entryInfo;
 		datainfo += " "+this.attachedInfo;
 		datainfo += " "+this.dataType;
@@ -186,7 +251,7 @@ public class DataType implements Serializable ,Cloneable{
 	}
 	public DataType clone() throws CloneNotSupportedException{
 		DataType temp = (DataType) super.clone();
-		List<DataType_Property> tempList = new ArrayList<>();
+		List<DataType_Property> tempList = new ArrayList<DataType_Property>();
 		int index = 0;
 		while(index < this.getPropertyList().size() ){
 			tempList.add(this.getPropertyList().get(index).clone());

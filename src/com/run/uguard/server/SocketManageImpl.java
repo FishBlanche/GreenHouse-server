@@ -201,7 +201,7 @@ public class SocketManageImpl implements SocketManageDao , Runnable{
 		System.out.println("payload:"+message);
 		if(leng.length() !=2) leng = "0"+leng;
 		System.out.println("leng:"+leng);
-		String tempCRC = CRC.getCrcTool().getCRCCode("440000FFFF000F"+leng+"3F89"+message);
+		String tempCRC = CRC.getCrcTool().getCRCCode("450000FFFF000F"+leng+"3F89"+message);
 		message = "7E440000FFFF000F"+leng+"3F89 "+message+" "+tempCRC.substring(2)+tempCRC.substring(0,2)+"7E";
 		System.out.println("message:"+message);
 		return temp.sendAll(message.toUpperCase());
@@ -214,7 +214,7 @@ public class SocketManageImpl implements SocketManageDao , Runnable{
 		if(temp == null) return false;
 		String leng = Integer.toHexString(message.length()/2+8);
 		if(leng.length() !=2) leng = "0"+leng;
-		message = "7E430000FFFF000F"+leng+"3F89"+message+CRC.getCrcTool().getCRCCode(message)+"7E";
+		message = "7E440000FFFF000F"+leng+"3F89"+message+CRC.getCrcTool().getCRCCode(message)+"7E";
 		return temp.sendKye(temp.getRouteMap().get(sink).getIp(), message);
 
 	}

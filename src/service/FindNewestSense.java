@@ -20,7 +20,7 @@ public class FindNewestSense {
 		return MySqlConnectionHelper.getConnection();
 	}
 	public  List<String> GetNewestSense () {
-		System.out.println("GetNewestSense");
+	//	System.out.println("GetNewestSense");
 		 List<String> list = new ArrayList<String>();
 		
 		try {
