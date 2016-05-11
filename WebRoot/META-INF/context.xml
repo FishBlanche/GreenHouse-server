@@ -28,7 +28,7 @@
 			<Resource auth="Container" driverClassName="com.mysql.jdbc.Driver"
 		maxActive="200" maxIdle="30" maxWait="10000" name="jdbc/greenhouse"
 		 type="javax.sql.DataSource"
-		url="jdbc:mysql://127.0.0.1:3306/greenhouse" username="admin" password="citysee"
+		url="jdbc:mysql://192.168.0.250:3306/greenhouse" username="admin" password="citysee"
 		validationQuery='select 1' testWhileIdle='true'
 		timeBetweenEvictionRunsMillis='8000' minEvictableIdleTimeMillis='10000' /> 
 		 

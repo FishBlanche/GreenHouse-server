@@ -242,7 +242,11 @@ public class SensingFilter {
 				skey = iterator.next( ).toString();  
 				svalue = MapData.settingMap.get(skey);
 				myValue= svalue.split(";");
-				controlJudge(myValue[0],myValue[1]);
+				if(Integer.parseInt(myValue[3])==0)//如果控制组开启
+				{
+					controlJudge(myValue[0],myValue[1]);
+				}
+				
 			}  
 		}
 	}
@@ -393,28 +397,9 @@ public class SensingFilter {
 			}
 			if((boolean)result)
 			{
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				 if(tempControl[0].equals("2"))//风扇,默认两个风扇都开
-					{
-						SendControl(convert("5",tempControl[0],tempControl[3],tempControl[2]));
-						try {
-							Thread.sleep(1000);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						SendControl(convert("6",tempControl[0],tempControl[3],tempControl[2]));
-					}
-					else
-					{
-						
-						SendControl(convert(tempControl[1],tempControl[0],tempControl[3],tempControl[2]));
-					}
+				 
+				 	SendControl(convert(tempControl[1],tempControl[0],tempControl[3],tempControl[2]));
+					 
 			}
 	        //System.out.println("结果类型:" + result.getClass().getName() + ",计算结果:" + result);
 		}
@@ -484,7 +469,7 @@ public class SensingFilter {
 		return tempStr.toString();
 	}
 	public  void SendControl(String message){
-		 System.out.println("自动控制触发:"+message);
+		//System.out.println("myp SendControl:"+message);
 		Iterator<CurrentSocketDao> temps = SocketManageImpl.getSocketManage().getLinkList().iterator();
 		while(temps.hasNext()){
 			CurrentSocketDao temp = temps.next();

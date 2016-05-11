@@ -139,6 +139,7 @@ public class CurrentSocketImpl implements CurrentSocketDao ,Runnable{
 			dataOutputStream.flush();
 			dataOutputStream.writeUnshared(key+"@"+message);
 			dataOutputStream.flush();
+			System.out.println("服务端指令发送完毕"+message+new Date().toGMTString());
 		
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

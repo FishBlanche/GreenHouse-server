@@ -38,7 +38,7 @@ public class AutoControlService {
 				String myValue="";
 				String[] cigp=controlGp.split(";");
 				myKey=cigp[0];
-				myValue=cigp[1]+";"+cigp[2]+";"+cigp[3];
+				myValue=cigp[1]+";"+cigp[2]+";"+cigp[3]+";"+cigp[4];
 			//	System.out.println("ControlSet"+myKey+"::"+myValue);
 				MapData.settingMap.put(myKey, myValue);
 				Sql_deal(myKey,myValue);
@@ -69,7 +69,7 @@ public class AutoControlService {
 			if(rs.next())
 			{
 				//修改
-				String sql1="update MyControlInfo set mycondition='"+valuegp[0]+"',operation='"+valuegp[1]+"',time='"+valuegp[2]+"'  where groupId='"+myKey+"'";
+				String sql1="update MyControlInfo set mycondition='"+valuegp[0]+"',operation='"+valuegp[1]+"',time='"+valuegp[2]+"',isopen="+valuegp[3] +"  where groupId='"+myKey+"'";
 			//	System.out.println(sql1);
 
 				stmt.executeUpdate(sql1);
@@ -79,7 +79,7 @@ public class AutoControlService {
 				//插入
 			//	String idStr="";
 			//	idStr=UuidGenerator.generate32UUID();
-				String sql2="insert into MyControlInfo(groupId,mycondition,operation,time) values('"+myKey+"','"+valuegp[0]+"','"+valuegp[1]+"','"+valuegp[2]+"')";
+				String sql2="insert into MyControlInfo(groupId,mycondition,operation,time,isopen) values('"+myKey+"','"+valuegp[0]+"','"+valuegp[1]+"','"+valuegp[2]+"',"+valuegp[3]+")";
 			//	System.out.println(sql2);
 				stmt.executeUpdate(sql2);
 			}

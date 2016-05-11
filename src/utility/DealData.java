@@ -28,7 +28,7 @@ public class DealData {
 	public DealData()
 	{
 		Timer timer = new Timer();
-		timer.schedule(new MyTask(), 10000, 1000*60*30);
+		timer.schedule(new MyTask(), 10000, 1000*60*10);
 	}
 	class MyTask extends TimerTask {
 		public void run() {

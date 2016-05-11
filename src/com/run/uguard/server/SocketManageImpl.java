@@ -78,7 +78,7 @@ public class SocketManageImpl implements SocketManageDao , Runnable{
 		Iterator<CurrentSocketDao> temps = currentSocketDaos.iterator();
 		while(temps.hasNext()){
 			CurrentSocketDao temp = temps.next();
-			System.out.println("当前："+userCodeCode+"匹配："+temp.getUser().getProid());
+			
 			if(temp.getUser().getProid().equals(userCodeCode)){
 				return temp;
 			}
@@ -159,8 +159,9 @@ public class SocketManageImpl implements SocketManageDao , Runnable{
 	}
 	@Override
 	public boolean sendMessage(String userCodeCode,String message) {
+	
 		// TODO Auto-generated method stub
-//		System.out.println("MYP message"+userCodeCode+"::"+message);
+		//System.out.println("sendMessage"+"::"+message);
 		String id = message.substring(0, 2);
 		String type = message.substring(2,4);
 		String lastTime = message.substring(4,8);
@@ -178,7 +179,7 @@ public class SocketManageImpl implements SocketManageDao , Runnable{
 				return false;
 			}
 		}else{
-			System.out.println(cmd.lastTime);
+			
 			try{
 				if(Integer.parseInt(isForce, 16) != 1){
 					if((tempTime - cmd.time)< cmd.lastTime*1000){
@@ -194,16 +195,16 @@ public class SocketManageImpl implements SocketManageDao , Runnable{
 				return false;
 			}
 		}
-		
+		System.out.println("自动控制触发:"+message+"------"+new Date().getTime());
+		System.out.println(cmd.lastTime);
 		CurrentSocketDao temp = getLink(userCodeCode);
 		if(temp == null) return false;
 		String leng = Integer.toHexString(message.length()/2+8);
-		System.out.println("payload:"+message);
+		
 		if(leng.length() !=2) leng = "0"+leng;
-		System.out.println("leng:"+leng);
-		String tempCRC = CRC.getCrcTool().getCRCCode("450000FFFF000F"+leng+"3F89"+message);
+		
+		String tempCRC = CRC.getCrcTool().getCRCCode("440000FFFF000F"+leng+"3F89"+message);
 		message = "7E440000FFFF000F"+leng+"3F89 "+message+" "+tempCRC.substring(2)+tempCRC.substring(0,2)+"7E";
-		System.out.println("message:"+message);
 		return temp.sendAll(message.toUpperCase());
 
 	}

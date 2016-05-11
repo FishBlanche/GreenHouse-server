@@ -93,7 +93,7 @@ public class ServletInitializer extends HttpServlet {
 				 while(rs.next())
 					{
 						 myKey=rs.getString("groupId");
-						 myValue=rs.getString("mycondition")+";"+rs.getString("operation")+";"+rs.getString("time");
+						 myValue=rs.getString("mycondition")+";"+rs.getString("operation")+";"+rs.getString("time")+";"+rs.getString("isopen");
 			//	 	 System.out.println( myKey+","+ myValue);
 						 MapData.settingMap.put(myKey, myValue);
 					}
